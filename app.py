@@ -10,8 +10,10 @@ import seaborn as sns
 nltk.download('punkt')
 nltk.download('punkt_tab')
 nltk.download('vader_lexicon')
-nltk.download('averaged_perceptron_tagger')
 nltk.download('universal_tagset')
+# Download the averaged_perceptron_tagger (without _eng suffix)
+nltk.download('averaged_perceptron_tagger')
+nltk.download('universal_tagset')  # Download the universal tagset as well
 
 # Streamlit app
 st.title("Text Analysis Workshop")

@@ -116,19 +116,3 @@ if user_text:
         plt.ylabel("Sentiment Score")
         plt.title("Sentiment Score per Sentence")
         st.pyplot(plt)
-
-    # Part-of-Speech (POS) Tagging
-    if st.button("POS Tagging"):
-        pos_tags = nltk.pos_tag(tokens, tagset='universal')
-        pos_counts = nltk.FreqDist(tag for word, tag in pos_tags)
-
-        st.write("POS Tag Distribution:")
-        st.write(dict(pos_counts))
-
-        # Plot POS distribution
-        plt.figure(figsize=(10, 5))
-        sns.barplot(x=list(pos_counts.keys()), y=list(pos_counts.values()))
-        plt.title("Part-of-Speech (POS) Distribution")
-        plt.xlabel("POS Tag")
-        plt.ylabel("Frequency")
-        st.pyplot(plt)

@@ -8,6 +8,7 @@ import seaborn as sns
 
 # Download necessary NLTK data
 nltk.download('punkt')
+nltk.download('punkt_tab')
 nltk.download('vader_lexicon')
 nltk.download('averaged_perceptron_tagger')
 nltk.download('universal_tagset')

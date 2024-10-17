@@ -57,88 +57,97 @@ I felt very still and very empty, the way the eye of a tornado must feel, moving
 # Streamlit app
 st.title("Text Analysis Workshop")
 
+# Clear figures before plotting to avoid overlapping
+def plot_sentence_lengths(sentences):
+    sentence_lengths = [len(sentence.split()) for sentence in sentences]
+    plt.clf()
+    plt.figure(figsize=(10, 5))
+    plt.plot(range(len(sentence_lengths)), sentence_lengths, marker='o')
+    plt.xlabel('Sentence Index')
+    plt.ylabel('Sentence Length (words)')
+    plt.title('Sentence Length Over Time')
+    st.pyplot(plt)
+
+def plot_word_frequency(most_common_words):
+    words, counts = zip(*most_common_words)
+    plt.clf()
+    plt.figure(figsize=(10, 5))
+    sns.barplot(x=list(words), y=list(counts))
+    plt.title("Word Frequency Distribution")
+    plt.xlabel("Words")
+    plt.ylabel("Frequency")
+    st.pyplot(plt)
+
+def plot_sentiment(sentiment_scores, avg_sentiment):
+    plt.clf()
+    plt.figure(figsize=(10, 5))
+    plt.bar(range(len(sentiment_scores)), sentiment_scores, color=['green' if score > 0 else 'red' if score < 0 else 'yellow' for score in sentiment_scores])
+    plt.axhline(0, color='black', linestyle='--')
+    plt.xlabel("Sentence Index")
+    plt.ylabel("Sentiment Score")
+    plt.title("Sentiment Score per Sentence")
+    st.pyplot(plt)
+
+# Streamlit app
+st.title("Text Analysis Workshop")
+
 # Large text input field
 st.header("Input Your Text")
-user_text = st.text_area("Enter your text below:", value = default_text, height=300)
+user_text = st.text_area("Enter your text below:", height=300)
 
 if user_text:
-    st.header("Explore Text Metrics")
-
     # Tokenize text
     tokens = word_tokenize(user_text.lower())
     sentences = sent_tokenize(user_text)
 
-    # Word and Character Count
-    if st.button("Word & Character Count"):
-        num_words = len(tokens)  # Ensure num_words is defined here
+    # Create tabs for each analysis feature
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["Word & Character Count", "Sentence Analysis", "Type-Token Ratio", "Word Frequency Distribution", "Sentiment Analysis"])
+
+    with tab1:
+        st.header("Word & Character Count")
+        num_words = len(tokens)
         num_chars = len(user_text)
         avg_word_length = sum(len(word) for word in tokens) / num_words
-
         st.write(f"Total Words: {num_words}")
         st.write(f"Total Characters: {num_chars}")
         st.write(f"Average Word Length: {avg_word_length:.2f} characters")
-
-        # Find the 5 longest words
         longest_words = sorted(tokens, key=len, reverse=True)[:5]
-
-        # Display the 5 longest words
         st.write("5 Longest Words:")
         for word in longest_words:
             st.write(f"{word} ({len(word)} characters)")
 
-    # Sentence Count and Length
-    if st.button("Sentence Analysis"):
+    with tab2:
+        st.header("Sentence Analysis")
         num_sentences = len(sentences)
-        num_words = len(tokens)  # Ensure num_words is calculated again
         avg_sentence_length = num_words / num_sentences
-        longest_sentences = sorted(sentences, key=len, reverse=True)[:2]
-
         st.write(f"Total Sentences: {num_sentences}")
         st.write(f"Average Sentence Length: {avg_sentence_length:.2f} words")
+        longest_sentences = sorted(sentences, key=len, reverse=True)[:2]
         st.write("Longest Sentences:")
         st.write(longest_sentences[0])
         st.write(longest_sentences[1])
+        plot_sentence_lengths(sentences)
 
-        # Plot sentence length through time
-        sentence_lengths = [len(sentence.split()) for sentence in sentences]
-        plt.figure(figsize=(10, 5))
-        plt.plot(range(len(sentence_lengths)), sentence_lengths, marker='o')
-        plt.xlabel('Sentence Index')
-        plt.ylabel('Sentence Length (words)')
-        plt.title('Sentence Length Over Time')
-        st.pyplot(plt)
-
-    # Type-Token Ratio (Lexical Diversity)
-    if st.button("Type-Token Ratio"):
+    with tab3:
+        st.header("Type-Token Ratio")
         types = set(tokens)
         ttr = len(types) / len(tokens)
         st.write(f"Type-Token Ratio (TTR): {ttr:.2f}")
 
-    # Word Frequency Distribution
-    if st.button("Word Frequency Distribution"):
+    with tab4:
+        st.header("Word Frequency Distribution")
         freq_dist = FreqDist(tokens)
         most_common_words = freq_dist.most_common(10)
-        
-        # Display the top 10 most frequent words as a simple text list
         st.write("Top 10 Most Frequent Words:")
         for word, count in most_common_words:
             st.write(f"{word}: {count} occurrences")
+        plot_word_frequency(most_common_words)
 
-        # Plot word frequency
-        words, counts = zip(*most_common_words)
-        plt.figure(figsize=(10, 5))
-        sns.barplot(x=list(words), y=list(counts))
-        plt.title("Word Frequency Distribution")
-        plt.xlabel("Words")
-        plt.ylabel("Frequency")
-        st.pyplot(plt)
-
-    # Sentiment Analysis
-    if st.button("Sentiment Analysis"):
+    with tab5:
+        st.header("Sentiment Analysis")
         sid = SentimentIntensityAnalyzer()
         sentiment_scores = [sid.polarity_scores(sentence)['compound'] for sentence in sentences]
         avg_sentiment = sum(sentiment_scores) / len(sentiment_scores)
-
         st.write(f"Average Sentiment Score: {avg_sentiment:.2f}")
         if avg_sentiment > 0:
             st.write("Overall Sentiment: Positive")
@@ -146,12 +155,4 @@ if user_text:
             st.write("Overall Sentiment: Negative")
         else:
             st.write("Overall Sentiment: Neutral")
-
-        # Sentiment Visualization
-        plt.figure(figsize=(10, 5))
-        plt.bar(range(len(sentiment_scores)), sentiment_scores, color='green' if avg_sentiment > 0 else 'red')
-        plt.axhline(0, color='black', linestyle='--')
-        plt.xlabel("Sentence Index")
-        plt.ylabel("Sentiment Score")
-        plt.title("Sentiment Score per Sentence")
-        st.pyplot(plt)
+        plot_sentiment(sentiment_scores, avg_sentiment)

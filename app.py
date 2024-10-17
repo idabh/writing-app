@@ -84,6 +84,15 @@ def plot_sentiment(sentiment_scores, avg_sentiment):
     plt.title("Sentiment Score per Sentence")
     st.pyplot(plt)
 
+def plot_sentiment_line(sentiment_scores):
+    plt.clf()
+    plt.figure(figsize=(10, 5))
+    plt.plot(range(len(sentiment_scores)), sentiment_scores, marker='o', linestyle='-', color='blue')
+    plt.xlabel("Sentence Index")
+    plt.ylabel("Sentiment Score")
+    plt.title("Sentiment Score Zigzag Line")
+    st.pyplot(plt)
+
 # Streamlit app
 st.title("Text Analysis Workshop")
 
@@ -153,3 +162,5 @@ if user_text:
         else:
             st.write("Overall Sentiment: Neutral")
         plot_sentiment(sentiment_scores, avg_sentiment)
+        plot_sentiment_line(sentiment_scores)
+

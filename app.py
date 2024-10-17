@@ -64,6 +64,14 @@ def plot_sentence_lengths(sentences):
     plt.title('Sentence Length Over Time')
     st.pyplot(plt)
 
+def plot_ttr_over_time(tokens, window_size=50):
+    ttr_values = []
+    for i in range(0, len(tokens) - window_size + 1, window_size):
+        window_tokens = tokens[i:i + window_size]
+        types = set(window_tokens)
+        ttr = len(types) / len(window_tokens)
+        ttr_values.append(ttr)
+
 def plot_word_frequency(most_common_words):
     words, counts = zip(*most_common_words)
     plt.clf()
@@ -139,6 +147,16 @@ if user_text:
         types = set(tokens)
         ttr = len(types) / len(tokens)
         st.write(f"Type-Token Ratio (TTR): {ttr:.2f}")
+
+        # Plot TTR over time
+        st.write("Type-Token Ratio Over Time (using a sliding window):")
+        plot_ttr_over_time(tokens)
+
+        # Display lexical richness metrics
+        hapax_legomena = [word for word in tokens if tokens.count(word) == 1]
+        st.write(f"Number of Hapax Legomena (words that occur only once): {len(hapax_legomena)}")
+        st.write(f"Percentage of Hapax Legomena: {(len(hapax_legomena) / len(tokens)) * 100:.2f}%")
+
 
     with tab4:
         st.header("Word Frequency Distribution")

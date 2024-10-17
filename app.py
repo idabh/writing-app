@@ -55,7 +55,7 @@ I felt very still and very empty, the way the eye of a tornado must feel, moving
 
 
 # Streamlit app
-st.title("Text Analysis Workshoppp")
+st.title("Text Analysis Workshop")
 
 # Large text input field
 st.header("Input Your Text")

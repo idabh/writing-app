@@ -71,6 +71,13 @@ def plot_ttr_over_time(tokens, window_size=50):
         types = set(window_tokens)
         ttr = len(types) / len(window_tokens)
         ttr_values.append(ttr)
+    plt.clf()
+    plt.figure(figsize=(10, 5))
+    plt.plot(range(len(ttr_values)), ttr_values, marker='o', linestyle='-', color='purple')
+    plt.xlabel("Window Index")
+    plt.ylabel("Type-Token Ratio (TTR)")
+    plt.title("Type-Token Ratio Over Time")
+    st.pyplot(plt)
 
 def plot_word_frequency(most_common_words):
     words, counts = zip(*most_common_words)

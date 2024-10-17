@@ -62,6 +62,7 @@ st.header("Input Your Text")
 user_text = st.text_area("Enter your text below:", value = default_text, height=300)
 
 if user_text:
+ if st.button("Recalculate Text Features"):
     st.header("Explore Text Metrics")
 
     # Tokenize text

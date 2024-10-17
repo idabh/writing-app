@@ -89,7 +89,8 @@ st.title("Text Analysis Workshop")
 
 # Large text input field
 st.header("Input Your Text")
-user_text = st.text_area("Enter your text below:", height=300)
+user_text = st.text_area("Enter your text below:", value = default_text, height=300)
+
 
 if user_text:
     # Tokenize text

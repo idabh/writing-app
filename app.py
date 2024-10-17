@@ -53,10 +53,6 @@ I guess I should have been excited the way most of the other girls were, but I c
 I felt very still and very empty, the way the eye of a tornado must feel, moving dully along in the middle of the surrounding hullabaloo.
 """
 
-
-# Streamlit app
-st.title("Text Analysis Workshop")
-
 # Clear figures before plotting to avoid overlapping
 def plot_sentence_lengths(sentences):
     sentence_lengths = [len(sentence.split()) for sentence in sentences]

@@ -126,7 +126,8 @@ st.title("🌟 Text Analysis Workshop 🌟")
 
 # Large text input field
 st.header("Input Your Text")
-user_text = st.text_area("Enter your text below:", value=default_text, height=300, help="Type or paste the text you want to analyze. Let's uncover its hidden secrets!")
+user_text = st.text_area("Enter your text below:", value=default_text, height=300, help="Type or paste the text you want to analyze.
+")
 
 # Slider for adjustable parameters
 st.sidebar.header("✨ Adjustable Parameters ✨")

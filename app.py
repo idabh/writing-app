@@ -15,7 +15,7 @@ nltk.download('averaged_perceptron_tagger')
 
 # Default text for the text area
 default_text = """
-It was a queer, sultry summer, the summer they electrocuted the Rosenbergs, and I didn't know what I was doing in New York. I'm stupid about executions.
+Iiiiiit was a queer, sultry summer, the summer they electrocuted the Rosenbergs, and I didn't know what I was doing in New York. I'm stupid about executions.
 The idea of being electrocuted makes me sick, and that's all there was to read about in the papers — goggle-eyed headlines staring up at me on every street corner and at the fusty, peanut-smelling
 mouth of every subway.
 It had nothing to do with me, but I couldn't help wondering what it would be like, being burned alive all along your nerves.

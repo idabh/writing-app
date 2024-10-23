@@ -200,8 +200,8 @@ if user_text:
         
         # Prompt for writers
         st.markdown("### ✨ Writer's Reflection ✨")
-        st.write("- **How varied is your vocabulary compared to different writing styles?** How might this affect the voice or tone you are creating?")
-        st.write("- **Which words stand out as the most unique or unusual in your text?** Could these words be used more effectively?")
+        st.write("- **How varied is your vocabulary?** How might this affect the voice or tone you are creating?")
+        #st.write("- **Which words stand out as the most unique or unusual in your text?** Could these words be used more effectively?")
 
     with tab4:
         st.header("Word Frequency Distribution")

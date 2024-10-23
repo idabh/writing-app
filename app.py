@@ -10,17 +10,16 @@ from streamlit.components.v1 import html
 
 # Download necessary NLTK data
 nltk.download('punkt')
-nltk.download('punkt_tab')
-nltk.download('vader_lexicon')
-nltk.download('universal_tagset')
-# Download the averaged_perceptron_tagger (without _eng suffix)
-nltk.download('averaged_perceptron_tagger')
-nltk.download('universal_tagset')  # Download the universal tagset as well
-
+try:
+    nltk.download('vader_lexicon')
+    nltk.download('averaged_perceptron_tagger')
+except Exception as e:
+    st.error("An error occurred while downloading NLTK data: " + str(e))
 
 # Default text for the text area
 default_text = """
-
+Welcome to the Happiness Text Analysis Workshop! 😊
+Feel free to paste or type any text you'd like to analyze. Let's explore the world of words and uncover exciting insights together!
 """
 
 # Clear figures before plotting to avoid overlapping
@@ -31,6 +30,7 @@ def plot_sentence_lengths(sentences):
     plt.xlabel('Sentence Index')
     plt.ylabel('Sentence Length (words)')
     plt.title('Sentence Length Over Time')
+    plt.grid(True)
     st.pyplot(plt)
 
 
@@ -46,16 +46,18 @@ def plot_ttr_over_time(tokens, window_size):
     plt.xlabel("Window Index")
     plt.ylabel("Type-Token Ratio (TTR)")
     plt.title("Type-Token Ratio Over Time")
+    plt.grid(True)
     st.pyplot(plt)
 
 
 def plot_word_frequency(most_common_words):
     words, counts = zip(*most_common_words)
     plt.figure(figsize=(10, 5))
-    sns.barplot(x=list(words), y=list(counts))
+    sns.barplot(x=list(words), y=list(counts), palette='viridis')
     plt.title("Word Frequency Distribution")
     plt.xlabel("Words")
     plt.ylabel("Frequency")
+    plt.grid(axis='y')
     st.pyplot(plt)
 
 
@@ -66,6 +68,7 @@ def plot_sentiment(sentiment_scores):
     plt.xlabel("Sentence Index")
     plt.ylabel("Sentiment Score")
     plt.title("Sentiment Score per Sentence")
+    plt.grid(True)
     st.pyplot(plt)
 
 
@@ -75,6 +78,7 @@ def plot_sentiment_line(sentiment_scores):
     plt.xlabel("Sentence Index")
     plt.ylabel("Sentiment Score")
     plt.title("Sentiment Score Zigzag Line")
+    plt.grid(True)
     st.pyplot(plt)
 
 
@@ -87,15 +91,15 @@ def highlight_longest_words(text, longest_words):
 
 
 # Streamlit app
-st.title("Text Analysis Workshop")
+st.title("🌟 Happiness Text Analysis Workshop 🌟")
 
 # Large text input field
 st.header("Input Your Text")
-user_text = st.text_area("Enter your text below:", value=default_text, height=300)
+user_text = st.text_area("Enter your text below:", value=default_text, height=300, help="Type or paste the text you want to analyze. Let's uncover its hidden secrets!")
 
 # Slider for adjustable parameters
-st.sidebar.header("Adjustable Parameters")
-window_size = st.sidebar.slider("Window Size for TTR Analysis", min_value=10, max_value=100, value=50, step=10)
+st.sidebar.header("✨ Adjustable Parameters ✨")
+window_size = st.sidebar.slider("Window Size for TTR Analysis", min_value=10, max_value=100, value=50, step=10, help="Adjust the window size to see different Type-Token Ratio (TTR) insights.")
 
 if user_text:
     # Tokenize text
@@ -107,18 +111,18 @@ if user_text:
         tokens, sentences = [], []
 
     # Create tabs for each analysis feature
-    tab1, tab2, tab3, tab4, tab5 = st.tabs(["Word & Character Count", "Sentence Analysis", "Type-Token Ratio", "Word Frequency Distribution", "Sentiment Analysis"])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(["📊 Word & Character Count", "📏 Sentence Analysis", "🔠 Type-Token Ratio", "📈 Word Frequency Distribution", "😊 Sentiment Analysis"])
 
     with tab1:
         st.header("Word & Character Count")
         num_words = len(tokens)
         num_chars = len(user_text)
         avg_word_length = sum(len(word) for word in tokens) / num_words if num_words > 0 else 0
-        st.write(f"Total Words: {num_words}")
-        st.write(f"Total Characters: {num_chars}")
-        st.write(f"Average Word Length: {avg_word_length:.2f} characters")
+        st.success(f"Total Words: {num_words}")
+        st.info(f"Total Characters: {num_chars}")
+        st.success(f"Average Word Length: {avg_word_length:.2f} characters")
         longest_words = sorted(tokens, key=len, reverse=True)[:5]
-        st.write("5 Longest Words:")
+        st.write("🌟 5 Longest Words:")
         for word in longest_words:
             st.write(f"{word} ({len(word)} characters)")
 
@@ -132,11 +136,11 @@ if user_text:
         st.header("Sentence Analysis")
         num_sentences = len(sentences)
         avg_sentence_length = num_words / num_sentences if num_sentences > 0 else 0
-        st.write(f"Total Sentences: {num_sentences}")
-        st.write(f"Average Sentence Length: {avg_sentence_length:.2f} words")
+        st.success(f"Total Sentences: {num_sentences}")
+        st.info(f"Average Sentence Length: {avg_sentence_length:.2f} words")
         if num_sentences > 0:
             longest_sentences = sorted(sentences, key=len, reverse=True)[:2]
-            st.write("Longest Sentences:")
+            st.write("🌟 Longest Sentences:")
             st.write(longest_sentences[0])
             if len(longest_sentences) > 1:
                 st.write(longest_sentences[1])
@@ -146,7 +150,7 @@ if user_text:
         st.header("Type-Token Ratio")
         types = set(tokens)
         ttr = len(types) / len(tokens) if len(tokens) > 0 else 0
-        st.write(f"Type-Token Ratio (TTR): {ttr:.2f}")
+        st.success(f"Type-Token Ratio (TTR): {ttr:.2f}")
 
         # Plot TTR over time with adjustable window size
         if len(tokens) >= window_size:
@@ -155,15 +159,15 @@ if user_text:
 
         # Display lexical richness metrics
         hapax_legomena = [word for word in tokens if tokens.count(word) == 1]
-        st.write(f"Number of Hapax Legomena (words that occur only once): {len(hapax_legomena)}")
-        st.write(f"Percentage of Hapax Legomena: {(len(hapax_legomena) / len(tokens)) * 100:.2f}%" if len(tokens) > 0 else "Percentage of Hapax Legomena: 0%")
+        st.info(f"Number of Hapax Legomena (words that occur only once): {len(hapax_legomena)}")
+        st.success(f"Percentage of Hapax Legomena: {(len(hapax_legomena) / len(tokens)) * 100:.2f}%" if len(tokens) > 0 else "Percentage of Hapax Legomena: 0%")
 
     with tab4:
         st.header("Word Frequency Distribution")
         if tokens:
             freq_dist = FreqDist(tokens)
             most_common_words = freq_dist.most_common(10)
-            st.write("Top 10 Most Frequent Words:")
+            st.write("🌟 Top 10 Most Frequent Words:")
             for word, count in most_common_words:
                 st.write(f"{word}: {count} occurrences")
             plot_word_frequency(most_common_words)
@@ -174,19 +178,21 @@ if user_text:
             sid = SentimentIntensityAnalyzer()
             sentiment_scores = [sid.polarity_scores(sentence)['compound'] for sentence in sentences]
             avg_sentiment = sum(sentiment_scores) / len(sentiment_scores) if len(sentiment_scores) > 0 else 0
-            st.write(f"Average Sentiment Score: {avg_sentiment:.2f}")
+            st.success(f"Average Sentiment Score: {avg_sentiment:.2f}")
             if avg_sentiment > 0:
-                st.write("Overall Sentiment: Positive")
+                st.balloons()
+                st.write("🎉 Overall Sentiment: Positive")
             elif avg_sentiment < 0:
-                st.write("Overall Sentiment: Negative")
+                st.write("😢 Overall Sentiment: Negative")
             else:
-                st.write("Overall Sentiment: Neutral")
+                st.write("😐 Overall Sentiment: Neutral")
             plot_sentiment(sentiment_scores)
             plot_sentiment_line(sentiment_scores)
 
 # Option to download results
 if user_text:
-    st.sidebar.header("Download Analysis Report")
+    st.sidebar.header("📄 Download Analysis Report")
     if st.sidebar.button("Generate Report"):
         st.write("Feature not implemented yet. Placeholder for future download feature.")
+
 

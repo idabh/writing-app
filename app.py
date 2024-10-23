@@ -148,7 +148,8 @@ if user_text:
         # Highlight longest words in the text
         highlighted_text = highlight_longest_words(user_text, longest_words)
         st.markdown("### Highlighted Text with Longest Words")
-        html(highlighted_text, height=300)
+        html_code = f'<div style="white-space: pre-wrap;">{highlighted_text}</div>'
+        html(html_code, height=300)
 
     with tab2:
         st.header("Sentence Analysis")
@@ -206,5 +207,3 @@ if user_text:
     st.sidebar.header("Download Analysis Report")
     if st.sidebar.button("Generate Report"):
         st.write("Feature not implemented yet. Placeholder for future download feature.")
-
-

@@ -5,58 +5,22 @@ from nltk import FreqDist
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.tokenize import word_tokenize, sent_tokenize
 import seaborn as sns
+import re
+from streamlit.components.v1 import html
 
 # Download necessary NLTK data
 nltk.download('punkt')
-nltk.download('punkt_tab')
 nltk.download('vader_lexicon')
-nltk.download('universal_tagset')
-# Download the averaged_perceptron_tagger (without _eng suffix)
 nltk.download('averaged_perceptron_tagger')
-nltk.download('universal_tagset')  # Download the universal tagset as well
-
 
 # Default text for the text area
 default_text = """
-It was a queer, sultry summer, the summer they electrocuted the Rosenbergs, and I didn't know what I was doing in New York. I'm stupid about executions.
-The idea of being electrocuted makes me sick, and that's all there was to read about in the papers — goggle-eyed headlines staring up at me on every street corner and at the fusty, peanut-smelling
-mouth of every subway.
-It had nothing to do with me, but I couldn't help wondering what it would be like, being burned alive all along your nerves.
 
-I thought it must be the worst thing in the world.
-
-New York was bad enough.
-By nine in the morning the fake, country-wet freshness that somehow seeped in overnight evaporated like the tail end of a sweet dream. Mirage-grey at the bottom of their granite canyons, the hot streets
- wavered in the sun, the car tops sizzled and glittered, and the dry, tindery dust blew into my eyes and down my throat.
-
-I kept hearing about the Rosenbergs over the radio and at the office till I couldn't get them out of my mind.
-It was like the first time I saw a cadaver.
-For weeks afterwards, the cadaver's head—or what there was left of it—floated up behind my eggs and bacon at breakfast and behind the face of Buddy Willard, who was responsible for my seeing it
-in the first place, and pretty soon I felt as though I were carrying that cadaver's head around with me on a string, like some black, noseless balloon stinking of vinegar.
-
-I knew something was wrong with me that summer, because all I could think about was the Rosenbergs and how stupid I'd been to buy all those uncomfortable, expensive clothes,
-hanging limp as fish in my closet, and how all the little successes I'd totted up so happily at college fizzled to nothing outside the slick marble and plate-glass fronts along Madison Avenue.
-
-I was supposed to be having the time of my life.
-
-I was supposed to be the envy of thousands of other college girls just like me all over America who wanted nothing more than to be tripping about in those same size seven patent leather shoes I'd bought
-in Bloomingdale's one lunch hour with a black patent leather belt and black patent leather pocket-book to match. And when my picture came out in the magazine the twelve of us were working
-on — drinking martinis in a skimpy, imitation silver-lamé bodice stuck on to a big, fat cloud of white tulle, on some Starlight Roof, in the company of several anonymous young men
-with all-American bone structures hired or loaned for the occasion — everybody would think I must be having a real whirl.
-
-Look what can happen in this country, they'd say.
-A girl lives in some out-of-the-way town for nineteen years, so poor she can't afford a magazine, and then she gets a scholarship to college and wins a prize here and a prize there and ends up steering New York like her own private car.
-
-Only I wasn't steering anything, not even myself.
-I just bumped from my hotel to work and to parties and from parties to my hotel and back to work like a numb trolley-bus.
-I guess I should have been excited the way most of the other girls were, but I couldn't get myself to react.
-I felt very still and very empty, the way the eye of a tornado must feel, moving dully along in the middle of the surrounding hullabaloo.
 """
 
 # Clear figures before plotting to avoid overlapping
 def plot_sentence_lengths(sentences):
     sentence_lengths = [len(sentence.split()) for sentence in sentences]
-    plt.clf()
     plt.figure(figsize=(10, 5))
     plt.plot(range(len(sentence_lengths)), sentence_lengths, marker='o')
     plt.xlabel('Sentence Index')
@@ -64,14 +28,14 @@ def plot_sentence_lengths(sentences):
     plt.title('Sentence Length Over Time')
     st.pyplot(plt)
 
-def plot_ttr_over_time(tokens, window_size=50):
+
+def plot_ttr_over_time(tokens, window_size):
     ttr_values = []
     for i in range(0, len(tokens) - window_size + 1, window_size):
         window_tokens = tokens[i:i + window_size]
         types = set(window_tokens)
         ttr = len(types) / len(window_tokens)
         ttr_values.append(ttr)
-    plt.clf()
     plt.figure(figsize=(10, 5))
     plt.plot(range(len(ttr_values)), ttr_values, marker='o', linestyle='-', color='purple')
     plt.xlabel("Window Index")
@@ -79,9 +43,9 @@ def plot_ttr_over_time(tokens, window_size=50):
     plt.title("Type-Token Ratio Over Time")
     st.pyplot(plt)
 
+
 def plot_word_frequency(most_common_words):
     words, counts = zip(*most_common_words)
-    plt.clf()
     plt.figure(figsize=(10, 5))
     sns.barplot(x=list(words), y=list(counts))
     plt.title("Word Frequency Distribution")
@@ -89,8 +53,8 @@ def plot_word_frequency(most_common_words):
     plt.ylabel("Frequency")
     st.pyplot(plt)
 
-def plot_sentiment(sentiment_scores, avg_sentiment):
-    plt.clf()
+
+def plot_sentiment(sentiment_scores):
     plt.figure(figsize=(10, 5))
     plt.bar(range(len(sentiment_scores)), sentiment_scores, color=['green' if score > 0 else 'red' if score < 0 else 'yellow' for score in sentiment_scores])
     plt.axhline(0, color='black', linestyle='--')
@@ -99,8 +63,8 @@ def plot_sentiment(sentiment_scores, avg_sentiment):
     plt.title("Sentiment Score per Sentence")
     st.pyplot(plt)
 
+
 def plot_sentiment_line(sentiment_scores):
-    plt.clf()
     plt.figure(figsize=(10, 5))
     plt.plot(range(len(sentiment_scores)), sentiment_scores, marker='o', linestyle='-', color='blue')
     plt.xlabel("Sentence Index")
@@ -108,13 +72,25 @@ def plot_sentiment_line(sentiment_scores):
     plt.title("Sentiment Score Zigzag Line")
     st.pyplot(plt)
 
+
+# Function to highlight longest words in the text
+def highlight_longest_words(text, longest_words):
+    for word in longest_words:
+        pattern = r"\b" + re.escape(word) + r"\b"
+        text = re.sub(pattern, f'<span style="color: red; font-weight: bold;">{word}</span>', text, flags=re.IGNORECASE)
+    return text
+
+
 # Streamlit app
 st.title("Text Analysis Workshop")
 
 # Large text input field
 st.header("Input Your Text")
-user_text = st.text_area("Enter your text below:", value = default_text, height=300)
+user_text = st.text_area("Enter your text below:", value=default_text, height=300)
 
+# Slider for adjustable parameters
+st.sidebar.header("Adjustable Parameters")
+window_size = st.sidebar.slider("Window Size for TTR Analysis", min_value=10, max_value=100, value=50, step=10)
 
 if user_text:
     # Tokenize text
@@ -137,6 +113,11 @@ if user_text:
         for word in longest_words:
             st.write(f"{word} ({len(word)} characters)")
 
+        # Highlight longest words in the text
+        highlighted_text = highlight_longest_words(user_text, longest_words)
+        st.markdown("### Highlighted Text with Longest Words")
+        html(highlighted_text, height=300)
+
     with tab2:
         st.header("Sentence Analysis")
         num_sentences = len(sentences)
@@ -155,15 +136,14 @@ if user_text:
         ttr = len(types) / len(tokens)
         st.write(f"Type-Token Ratio (TTR): {ttr:.2f}")
 
-        # Plot TTR over time
+        # Plot TTR over time with adjustable window size
         st.write("Type-Token Ratio Over Time (using a sliding window):")
-        plot_ttr_over_time(tokens)
+        plot_ttr_over_time(tokens, window_size)
 
         # Display lexical richness metrics
         hapax_legomena = [word for word in tokens if tokens.count(word) == 1]
         st.write(f"Number of Hapax Legomena (words that occur only once): {len(hapax_legomena)}")
         st.write(f"Percentage of Hapax Legomena: {(len(hapax_legomena) / len(tokens)) * 100:.2f}%")
-
 
     with tab4:
         st.header("Word Frequency Distribution")
@@ -186,6 +166,13 @@ if user_text:
             st.write("Overall Sentiment: Negative")
         else:
             st.write("Overall Sentiment: Neutral")
-        plot_sentiment(sentiment_scores, avg_sentiment)
+        plot_sentiment(sentiment_scores)
         plot_sentiment_line(sentiment_scores)
+
+# Option to download results
+if user_text:
+    st.sidebar.header("Download Analysis Report")
+    if st.sidebar.button("Generate Report"):
+        st.write("Feature not implemented yet. Placeholder for future download feature.")
+
 

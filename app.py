@@ -18,7 +18,7 @@ except Exception as e:
 
 # Default text for the text area
 default_text = """
-Welcome to the Happiness Text Analysis Workshop! 😊
+Welcome to the Text Analysis Workshop! 😊
 Feel free to paste or type any text you'd like to analyze. Let's explore the world of words and uncover exciting insights together!
 """
 
@@ -91,7 +91,7 @@ def highlight_longest_words(text, longest_words):
 
 
 # Streamlit app
-st.title("🌟 Happiness Text Analysis Workshop 🌟")
+st.title("🌟 Text Analysis Workshop 🌟")
 
 # Large text input field
 st.header("Input Your Text")

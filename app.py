@@ -177,6 +177,11 @@ if user_text:
                 st.write(longest_sentences[1])
             plot_sentence_lengths(sentences)
 
+    # Prompt for writers
+        st.markdown("### ✨ Writer's Reflection ✨")
+        st.write("- **What does the sentence length tell you about your pacing?** Are there moments where longer or shorter sentences might better reflect the action or emotion?")
+        st.write("- **Does your sentence length mirror the emotional intensity of the scene?** Could you adjust it to create a different effect?")
+
     with tab3:
         st.header("Type-Token Ratio")
         types = set(tokens)

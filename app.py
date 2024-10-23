@@ -197,6 +197,11 @@ if user_text:
         hapax_legomena = [word for word in tokens if tokens.count(word) == 1]
         st.info(f"Number of Hapax Legomena (words that occur only once): {len(hapax_legomena)}")
         st.success(f"Percentage of Hapax Legomena: {(len(hapax_legomena) / len(tokens)) * 100:.2f}%" if len(tokens) > 0 else "Percentage of Hapax Legomena: 0%")
+        
+        # Prompt for writers
+        st.markdown("### ✨ Writer's Reflection ✨")
+        st.write("- **How varied is your vocabulary compared to different writing styles?** How might this affect the voice or tone you are creating?")
+        st.write("- **Which words stand out as the most unique or unusual in your text?** Could these words be used more effectively?")
 
     with tab4:
         st.header("Word Frequency Distribution")
@@ -207,6 +212,11 @@ if user_text:
             for word, count in most_common_words:
                 st.write(f"{word}: {count} occurrences")
             plot_word_frequency(most_common_words)
+            
+            # Prompt for writers
+            st.markdown("### ✨ Writer's Reflection ✨")
+            st.write("- **What do the most frequently used words say about your piece?** Are they intentional or could they be improved?")
+            st.write("- **Are there any repetitive words that stand out?** How could you diversify them?")
 
     with tab5:
         st.header("Sentiment Analysis")
@@ -224,6 +234,12 @@ if user_text:
                 st.write("😐 Overall Sentiment: Neutral")
             plot_sentiment(sentiment_scores)
             plot_sentiment_line(sentiment_scores)
+            
+            # Prompt for writers
+            st.markdown("### ✨ Writer's Reflection ✨")
+            st.write("- **How does the emotional tone of your writing evolve over time?** Does the graph match the intended emotional journey?")
+            st.write("- **Try shifting the sentiment of a piece of text.** How does the story change when the sentiment is altered?")
+            st.write("- **Does the sentiment analysis align with what you intended to convey?** If not, how could you adjust your language to achieve your goals?")
 
 # Option to download results
 if user_text:

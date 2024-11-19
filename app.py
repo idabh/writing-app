@@ -16,19 +16,6 @@ from nltk.corpus import stopwords
 
 import subprocess
 
-# Install SpaCy and the model if not already installed
-try:
-    import spacy
-except ImportError:
-    subprocess.run(["pip", "install", "spacy"], check=True)
-
-try:
-    import spacy
-    spacy.load("en_core_web_sm")
-except OSError:
-    subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
-    import spacy
-
 
 # Download necessary NLTK data
 nltk.download('punkt')

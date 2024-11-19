@@ -14,7 +14,7 @@ import numpy as np
 from nltk.corpus import stopwords
 
 # Load SpaCy model
-! python -m spacy download en_core_web_sm
+!python -m spacy download en_core_web_sm
 nlp = spacy.load("en_core_web_sm") 
 
 # Download necessary NLTK data

@@ -6,4 +6,3 @@ spacy
 gensim
 numpy
 pandas
-spacy download en_core_web_sm

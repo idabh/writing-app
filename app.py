@@ -12,7 +12,7 @@ from streamlit.components.v1 import html
 import spacy
 import numpy as np
 from nltk.corpus import stopwords
-import scikit-learn as sklearn
+import sklearn
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.cluster import KMeans
 

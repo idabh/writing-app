@@ -7,4 +7,3 @@ gensim
 re
 numpy
 pandas
-scikit-learn

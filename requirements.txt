@@ -2,3 +2,5 @@ streamlit
 nltk
 matplotlib
 seaborn
+spacy
+gensim

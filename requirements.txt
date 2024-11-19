@@ -4,3 +4,7 @@ matplotlib
 seaborn
 spacy
 gensim
+re
+numpy
+pandas
+sklearn

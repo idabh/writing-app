@@ -12,10 +12,10 @@ from streamlit.components.v1 import html
 import spacy
 import numpy as np
 from nltk.corpus import stopwords
-import subprocess
+#import subprocess
 
 # Load SpaCy model
-subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
+#subprocess.run(["python", "-m", "spacy", "download", "en_core_web_sm"], check=True)
 nlp = spacy.load("en_core_web_sm")
 
 # Download necessary NLTK data
